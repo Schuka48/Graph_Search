@@ -1,123 +1,126 @@
 #include "graph.h"
 
-int Graph::gr_id = 0;
+int Graph::count_graph = 0;
 
 Graph::Graph()
 {
-    this->gr_sum = 0;
-    this->size = 0;
-    this->id = gr_id++;
+    this->id = ++count_graph;
+    sum = 0;
 }
 
-bool Graph::LoadFromFile(QFile *file)
+void Graph::LoadFromFile(QFile* file)
 {
-    int size;
-    QTextStream txt(file);
-    txt >> size;
-    if(size)
-        this->size = size;
-    for(int i(0); i < size; i++)
+    if(!file->isOpen())
     {
-        Vertex v(this);
-        verts.push_back(v);
+        return;
     }
-    for(int i(0); i < size; i++)
-    {
+    QTextStream txt(file);
+    QString size = "";
+    txt >> size;
+
+    try {
+        this->size = size.toInt();
+        qDebug() << size;
+    } catch (...) {
+        qDebug() << "Wrong!";
+        return;
+    }
+
+    for(int i(0); i < this->size; i++) {
+        node* vertex = new node();
+        this->nodes.push_back(vertex);
+    }
+
+    for(int i(0); i < this->size; i++) {
         QString str;
-        for (int j(0); j < size ; j++) {
-              txt >> str;
-              if(j <= i)
-                  continue;
-              if(str != "INF") {
-                  Edge* ed = new Edge(this);
-                  ed->set_first(&get_vertex(i));
-                  ed->set_second(&get_vertex(j));
-                  if(!ed->calc_weight())
-                  {
-                      // причина, по которой нельзя посчитать длину ребра
-                  }
-                  edges.push_back(*ed);
-                  verts[i].get_edges().push_back(&edges.last());
-                  verts[j].get_edges().push_back(&edges.last());
-              }
+        for(int j(0); j < this->size; j++) {
+            txt >> str;
+
+            if(str == "INF" || i >= j)
+                continue;
+                // создание и инициализация ребер + добавление их в список у вершины
+            edge* ed = new edge();
+            ed->set_first(this->nodes[i]);
+            ed->set_second(this->nodes[j]);
+            ed->set_weight(abs(i-j));
+            this->edges.push_back(ed);
+
+            this->nodes[i]->add_edge(ed);
+            this->nodes[j]->add_edge(ed);
         }
     }
-    this->gr_sum = get_sum();
-    return true;
+    int graph_sum =this->count_sum();
+    this->set_sum(graph_sum);
+
+    swap(0, 2);
+
+    swap(0, 1);
+    QString str("");
+
 }
 
-void Graph::set_graph_size(int size)
+int Graph::get_sum()
 {
-    this->size = size;
+    return this->sum;
 }
 
-Vertex &Graph::get_vertex(int index)
+int Graph::count_sum() // расчет суммы
 {
-    return  this->verts[index];
-}
-
-int Graph::get_vert_position(Vertex *v)
-{
-    return verts.indexOf(*v);
-}
-
-ul Graph::get_sum()
-{
-    ul sum(0);
-    for(auto& ed: edges)
-    {
-        sum += ul(ed.get_weight());
+    int graph_sum = 0;
+    for(auto edge: edges) {
+        graph_sum += edge->get_weight();
     }
-    return sum;
+    if(!graph_sum)
+        return INT_MAX;
+    else return graph_sum;
 }
 
-void Graph::calculate()
+void Graph::set_sum(int sum)
 {
-
-    Edge* max_edge = this->get_max_edge();
-    find_best_posting(max_edge);
+    this->sum = sum;
 }
 
-Edge *Graph::get_max_edge()
+void Graph::swap(const int first, const int second) // меняет местами вершины, расположенные по линейке
 {
-    Edge* max_edge = &edges.first();
-    for(auto& ed: edges) {
-        if(ed.get_weight() > max_edge->get_weight())
-            max_edge = &ed;
-    }
-    return max_edge;
-}
-
-int Graph::get_graph_size()
-{
-    return this->size;
-}
-
-void Graph::find_best_posting(Edge* edge)
-{
-    int fixed_position = this->get_vert_position(edge->get_first());
-    int dynamic_position = this->get_vert_position(edge->get_second());
+    QList<node*> new_nodes;
+    int c(0);
     for(int i(0); i < this->size; i++) {
-        if (i == fixed_position || i == dynamic_position)
-            continue;
-        swap(verts[dynamic_position], verts[i]); // не понятное поведение программы
-        edge->set_weight(abs(fixed_position - i));
-        // пересчет ребер поменяных вершин
-        recalc(dynamic_position, i);
+       if(i != first && i != second) {
+           new_nodes.push_back(this->nodes[i]);
+       }
+       else {
+           if(!c){
+               new_nodes.push_back(this->nodes[second]);
+               c++;
+           }
+           else {
+            new_nodes.push_back(this->nodes[first]);
+           }
+       }
+    }
 
+    this->nodes = new_nodes;
+    this->edge_recalc(); // пересчет длин ребер
+    this->set_sum(this->count_sum()); // назначение новой суммы веса ребер графа
+}
+
+void Graph::edge_recalc() // пересчет весов ребер
+{
+    for(auto& edge: this->edges) {
+        int first_id = edge->get_node(1)->get_id();
+        int second_id = edge->get_node(2)->get_id();
+        int new_weight = abs(get_node_position(first_id) - get_node_position(second_id)); // сделать проверку на -1 позиции вершины
+        edge->set_weight(new_weight);
     }
 }
 
-void Graph::recalc(int first, int second)
+int Graph::get_node_position(int node_id) // возвращает позцицию вершины по ее id
 {
-    for(auto& ed: verts[first].get_edges()) {
-        if(get_vertex(first) == *ed->get_first() && get_vertex(second) == *ed->get_second())
-            continue;
-        ed->set_weight(abs(get_vert_position(ed->get_first()) - get_vert_position(ed->get_second())));
+    int c = 0;
+    for(auto node: this->nodes) {
+        if(node->get_id() == node_id)
+            return c;
+        c++;
     }
-    for(auto& ed: verts[second].get_edges()) {
-        if(get_vertex(first) == *ed->get_first() && get_vertex(second) == *ed->get_second())
-            continue;
-        ed->set_weight(abs(get_vert_position(ed->get_first()) - get_vert_position(ed->get_second())));
-    }
+    return -1;
 }

@@ -1,43 +1,26 @@
 #ifndef EDGE_H
 #define EDGE_H
 
-#include "vertex.h"
-#include "graph.h"
+#include "node.h"
 
-class Vertex;
-class Graph;
-
-class Edge
+class node;
+class edge
 {
-    int index;
+    static int edge_count;
+    int id;
     int weight;
-    Vertex* first;
-    Vertex* second;
-    Graph* gr;
-
-    static int edge_id;
+    node* first;
+    node* second;
 
 public:
-    Edge(Graph* gr);
-    Edge();
-    bool inline operator== (const Edge& edge){
-        return this->index == edge.index;
-    }
-    bool inline operator > (const Edge& edge) {
-        return this->weight > edge.weight;
-    }
-    bool inline operator < (const Edge& edge) {
-        return this->weight < edge.weight;
-    }
+    edge(int weight = 0);
 
-    void set_first(Vertex* vertex);
-    void set_second(Vertex* vertex);
-
-    bool calc_weight();
+    bool set_first(node* vertex);
+    bool set_second(node* vertex);
     void set_weight(int weight);
+
     int get_weight();
-    Vertex* get_second();
-    Vertex* get_first();
+    node* get_node(int number);
 };
 
 #endif // EDGE_H

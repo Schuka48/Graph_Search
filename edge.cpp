@@ -1,59 +1,50 @@
 #include "edge.h"
 
-int Edge::edge_id(1);
+int edge::edge_count = 0;
 
-Edge::Edge(Graph* gr)
+edge::edge(int weight)
 {
-    this->index = edge_id++;
-    this->first = nullptr;
-    this->second = nullptr;
-    this->gr = gr;
+    this->id = ++edge_count;
+    this->weight = weight;
 }
 
-Edge::Edge()
+bool edge::set_first(node *vertex)
 {
-    this->index = edge_id++;
-    this->first = nullptr;
-    this->second = nullptr;
-}
-
-void Edge::set_first(Vertex *vertex)
-{
-    this->first = vertex;
-}
-
-void Edge::set_second(Vertex *vertex)
-{
-    this->second = vertex;
-}
-
-bool Edge::calc_weight()
-{
-    int f = gr->get_vert_position(first);
-    int s = gr->get_vert_position(second);
-    if(f >= 0 && s >= 0) {
-        this->weight = abs(f-s);
+    if(vertex != nullptr) {
+        this->first = vertex;
         return true;
     }
     return false;
 }
 
-void Edge::set_weight(int weight)
+bool edge::set_second(node *vertex)
 {
-    this->weight = weight;
+    if(vertex != nullptr) {
+        this->second = vertex;
+        return true;
+    }
+    return false;
 }
 
-int Edge::get_weight()
+void edge::set_weight(int weight)
+{
+    if(weight > 0) {
+        this->weight = weight;
+    }
+}
+
+int edge::get_weight()
 {
     return this->weight;
 }
 
-Vertex *Edge::get_second()
+node *edge::get_node(int number)
 {
-    return this->second;
-}
-
-Vertex *Edge::get_first()
-{
-    return this->first;
+    if(number == 2) {
+        return this->second;
+    }
+    if(number == 1) {
+        return this->first;
+    }
+    return nullptr;
 }

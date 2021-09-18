@@ -1,42 +1,37 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
-typedef unsigned long ul;
-
-#include "vertex.h"
+#include "node.h"
 #include "edge.h"
 
 #include <QList>
+#include <QFile>
 #include <QTextStream>
-
-using namespace std;
-
-class Edge;
-class Vertex;
+#include <QDebug>
 
 class Graph
 {
+    static int count_graph;
     int id;
     int size;
-    QList<Edge> edges;
-    QList<Vertex> verts;
-    ul gr_sum;
-
-    static int gr_id;
-
+    int sum;
+    QList<node*> nodes;
+    QList<edge*> edges;
 
 public:
     Graph();
-    bool LoadFromFile(QFile* file);
-    void set_graph_size(int size);
-    Vertex& get_vertex(int index);
-    int get_vert_position(Vertex* v);
-    ul get_sum();
-    void calculate();
-    Edge* get_max_edge();
-    int get_graph_size();
-    void find_best_posting(Edge* edge);
-    void recalc(int first, int second);
+    void LoadFromFile(QFile* file);
+    node* get_node(int index);
+    int get_sum();
+
+
+private:
+    int count_sum();
+    void set_sum(int sum = INT_MAX);
+    void swap(const int first, const int second);
+    void edge_recalc();
+
+    int get_node_position(int node_id);
 };
 
 #endif // GRAPH_H
