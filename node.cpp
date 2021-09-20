@@ -7,6 +7,7 @@ node::node()
     this->id = ++node_count;
 }
 
+
 void node::add_edge(edge *ed)
 {
     this->edges.push_back(ed);
@@ -24,6 +25,11 @@ edge*node::get_edge(int index)
 int node::get_id()
 {
     return this->id;
+}
+
+void node::reset()
+{
+    node_count = 0;
 }
 
 

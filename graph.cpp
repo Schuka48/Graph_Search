@@ -2,10 +2,50 @@
 
 int Graph::count_graph = 0;
 
+
+
 Graph::Graph()
 {
     this->id = ++count_graph;
     sum = 0;
+    reset();
+}
+
+Graph::Graph(const Graph & graph)
+{
+    reset();
+
+    QList<node*> tmp;
+    for(int i = 0; i < graph.nodes.size(); i++) {
+
+        node* vertex = new node();
+        tmp.push_back(vertex);
+
+    }
+    for(const auto& node: graph.nodes) {
+        int node_id = node->get_id(); // id первого узла в копируемом графе
+        int node_position = get_node_position(tmp, node_id); // позиция в tmp узла с node_id
+        this->nodes.push_back(tmp[node_position]); // добавление в this->nodes узла с node_position
+    }
+
+    for(int i = 0; i < graph.edges.size(); i++) {
+        edge* ed = new edge();
+
+        int first_node_id = graph.edges[i]->get_first_node_id();
+        int second_node_id = graph.edges[i]->get_second_node_id();
+
+        int first_node_position = this->get_node_position(first_node_id);
+        int second_node_position = this->get_node_position(second_node_id);
+
+        ed->set_first(this->nodes[first_node_position]);
+        ed->set_second(this->nodes[second_node_position]);
+        ed->set_weight(graph.edges[i]->get_weight());
+
+        this->edges.push_back(ed);
+        this->nodes[first_node_position]->add_edge(ed);
+        this->nodes[second_node_position]->add_edge(ed);
+    }
+    this->sum = graph.sum;
 }
 
 void Graph::LoadFromFile(QFile* file)
@@ -52,11 +92,9 @@ void Graph::LoadFromFile(QFile* file)
     int graph_sum =this->count_sum();
     this->set_sum(graph_sum);
 
-    swap(0, 2);
-
-    swap(0, 1);
+    swap(0, 2); // тест
+//    swap(0, 1);
     QString str("");
-
 }
 
 int Graph::get_sum()
@@ -107,11 +145,23 @@ void Graph::swap(const int first, const int second) // меняет местам
 void Graph::edge_recalc() // пересчет весов ребер
 {
     for(auto& edge: this->edges) {
-        int first_id = edge->get_node(1)->get_id();
-        int second_id = edge->get_node(2)->get_id();
-        int new_weight = abs(get_node_position(first_id) - get_node_position(second_id)); // сделать проверку на -1 позиции вершины
-        edge->set_weight(new_weight);
+
+        int first_edge_position = get_node_position(edge->get_node(1)->get_id());
+        int second_edge_position  = get_node_position(edge->get_node(2)->get_id());
+        if (first_edge_position > -1 && second_edge_position > -1) {
+            int new_weight = abs(first_edge_position - second_edge_position);
+            edge->set_weight(new_weight);
+        }
+        else {
+            edge->set_weight(INT_MAX);
+        }
     }
+}
+
+void Graph::reset() // сброс id для узлов и ребер
+{
+    node::reset();
+    edge::reset();
 }
 
 int Graph::get_node_position(int node_id) // возвращает позцицию вершины по ее id
@@ -123,4 +173,16 @@ int Graph::get_node_position(int node_id) // возвращает позцици
         c++;
     }
     return -1;
+}
+
+int Graph::get_node_position(QList<node *> &nodes, int node_id)
+{
+    int c = 0;
+    for(auto node: nodes) {
+        if(node->get_id() == node_id)
+            return c;
+        c++;
+    }
+    return -1;
+
 }

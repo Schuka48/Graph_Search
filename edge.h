@@ -21,6 +21,10 @@ public:
 
     int get_weight();
     node* get_node(int number);
+    int get_first_node_id();
+    int get_second_node_id();
+
+    static void reset();
 };
 
 #endif // EDGE_H

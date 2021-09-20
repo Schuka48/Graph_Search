@@ -27,7 +27,10 @@ void MainWindow::on_action_triggered()
     }
 
     graph->LoadFromFile(&open_file);
+    Graph* test_graph = new Graph(*graph);
+    int sum = test_graph->get_sum();
 
     open_file.close();
+
 
 }

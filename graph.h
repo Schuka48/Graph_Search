@@ -20,6 +20,7 @@ class Graph
 
 public:
     Graph();
+    Graph(const Graph&);
     void LoadFromFile(QFile* file);
     node* get_node(int index);
     int get_sum();
@@ -30,8 +31,10 @@ private:
     void set_sum(int sum = INT_MAX);
     void swap(const int first, const int second);
     void edge_recalc();
+    void reset();
 
     int get_node_position(int node_id);
+    int get_node_position(QList<node*>& nodes, int node_id);
 };
 
 #endif // GRAPH_H

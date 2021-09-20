@@ -19,6 +19,8 @@ public:
 
     int get_id();
     int get_position(int id);
+
+    static void reset();
 };
 
 #endif // NODE_H

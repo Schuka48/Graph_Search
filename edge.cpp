@@ -48,3 +48,18 @@ node *edge::get_node(int number)
     }
     return nullptr;
 }
+
+int edge::get_first_node_id()
+{
+    return first->get_id();
+}
+
+int edge::get_second_node_id()
+{
+    return second->get_id();
+}
+
+void edge::reset()
+{
+    edge_count = 0;
+}
