@@ -1,7 +1,7 @@
 #ifndef EDGE_H
 #define EDGE_H
 
-#include "node.h"
+#include "graph/node.h"
 
 class node;
 class edge

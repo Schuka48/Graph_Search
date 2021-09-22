@@ -21,9 +21,14 @@ class Graph
 public:
     Graph();
     Graph(const Graph&);
+
+    Graph& operator= (const Graph& graph);
+
     void LoadFromFile(QFile* file);
+
     node* get_node(int index);
     int get_sum();
+    int get_node_count();
 
 
 private:
@@ -32,6 +37,7 @@ private:
     void swap(const int first, const int second);
     void edge_recalc();
     void reset();
+
 
     int get_node_position(int node_id);
     int get_node_position(QList<node*>& nodes, int node_id);

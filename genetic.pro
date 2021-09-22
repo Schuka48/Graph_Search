@@ -16,20 +16,27 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    edge.cpp \
-    graph.cpp \
+    forms/settings/settings.cpp \
+    genetic_algorithm/params.cpp \
+    genetic_algorithm/population.cpp \
+    graph/edge.cpp \
+    graph/graph.cpp \
+    graph/node.cpp \
     main.cpp \
-    mainwindow.cpp \
-    node.cpp
+    startwindow.cpp
 
 HEADERS += \
-    edge.h \
-    graph.h \
-    mainwindow.h \
-    node.h
+    forms/settings/settings.h \
+    genetic_algorithm/params.h \
+    genetic_algorithm/population.h \
+    graph/edge.h \
+    graph/graph.h \
+    graph/node.h \
+    startwindow.h
 
 FORMS += \
-    mainwindow.ui
+    forms/settings/settings.ui \
+    startwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

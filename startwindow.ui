@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>StartWindow</class>
+ <widget class="QMainWindow" name="StartWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -17,14 +17,14 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>300</x>
-      <y>120</y>
-      <width>121</width>
-      <height>51</height>
+      <x>640</x>
+      <y>480</y>
+      <width>141</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
-     <string>PushButton</string>
+     <string>Запустить</string>
     </property>
    </widget>
   </widget>
@@ -44,23 +44,53 @@
     <addaction name="action"/>
     <addaction name="action_2"/>
     <addaction name="action_3"/>
+    <addaction name="action_4"/>
+   </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>Параметры</string>
+    </property>
+    <addaction name="action_5"/>
    </widget>
    <addaction name="menu"/>
+   <addaction name="menu_2"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="action">
    <property name="text">
     <string>Загрузить</string>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Загрузить файл графа&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
   </action>
   <action name="action_2">
    <property name="text">
     <string>Сохранить</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
   </action>
   <action name="action_3">
    <property name="text">
-    <string>Сохранитькак ...</string>
+    <string>Сохранить как ...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+S</string>
+   </property>
+  </action>
+  <action name="action_4">
+   <property name="text">
+    <string>Выйти</string>
+   </property>
+  </action>
+  <action name="action_5">
+   <property name="text">
+    <string>Установка параметров</string>
    </property>
   </action>
  </widget>
