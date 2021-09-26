@@ -97,20 +97,29 @@ Graph &Graph::operator=(const Graph &graph)
     return *this;
 }
 
-void Graph::LoadFromFile(QFile* file)
+bool Graph::LoadFromFile(QFile* file, int &error)
 {
-    if(!file->isOpen()) return;
+    if(!file->isOpen()) {
+        error = 1;
+        return false;
+    }
 
     QTextStream txt(file);
     QString size = "";
     txt >> size;
+    if(size < 3)
+    {
+        error = 2;
+        return false;
+    }
 
     try {
         this->size = size.toInt();
         qDebug() << size;
     } catch (...) {
         qDebug() << "Wrong!";
-        return;
+        error = 3;
+        return false;
     }
 
     for(int i(0); i < this->size; i++) {
@@ -139,8 +148,48 @@ void Graph::LoadFromFile(QFile* file)
     int graph_sum =this->count_sum();
     this->set_sum(graph_sum);
 
+    return true;
+
 //    swap(0, 2); // тест
-//    swap(0, 1);
+    //    swap(0, 1);
+}
+
+void Graph::node_swap(bool random, QPair<int, int> node_numbers)
+{
+    if(random) {
+        QRandomGenerator* rd = QRandomGenerator::global();
+
+        QPair<int, int> pair;
+        pair.first = rd->bounded(0, this->size);
+        pair.second = rd->bounded(0, this->size);
+
+        while(pair.second == pair.first)
+            pair.second = rd->bounded(0, this->size);
+
+        if(pair.first < pair.second)
+            this->swap(pair.first, pair.second);
+        else
+            this->swap(pair.second, pair.first);
+
+        delete rd;
+    }
+    else {
+        if(node_numbers.first != node_numbers.second) {
+
+            if(node_numbers.first < node_numbers.second)
+                this->swap(node_numbers.first, node_numbers.second);
+            else
+                this->swap(node_numbers.second, node_numbers.first);
+        }
+    }
+}
+
+void Graph::node_inversion(int start_node)
+{
+    for(int i = start_node + 1; i < this->size; i++)
+    {
+//        int c= 0;
+    }
 }
 
 int Graph::get_sum()
@@ -166,6 +215,9 @@ void Graph::set_sum(int sum)
 
 void Graph::swap(const int first, const int second) // меняет местами вершины, расположенные по линейке
 {
+    if(first == second)
+        return;
+
     QList<node*> new_nodes;
     int c(0);
     for(int i(0); i < this->size; i++) {
@@ -217,11 +269,12 @@ int Graph::get_node_count()
 
 int Graph::get_node_position(int node_id) // возвращает позцицию вершины по ее id
 {
-    int c = 0;
-    for(auto node: this->nodes) {
+    int position = 0;
+
+    for(const auto& node: this->nodes) {
         if(node->get_id() == node_id)
-            return c;
-        c++;
+            return position;
+        position++;
     }
     return -1;
 }
@@ -236,4 +289,9 @@ int Graph::get_node_position(QList<node *> &nodes, int node_id)
     }
     return -1;
 
+}
+
+int Graph::get_id()
+{
+    return this->id;
 }

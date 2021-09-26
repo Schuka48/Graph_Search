@@ -26,7 +26,10 @@ void StartWindow::on_action_triggered()
         QMessageBox::warning(this, "Warning!", "Файл не открылся!");
         return;
     }
-    graph->LoadFromFile(&open_file);
+    int error = 0;
+    graph->LoadFromFile(&open_file, error);
+
+    // switch case если вернули false;
 
     open_file.close();
 }

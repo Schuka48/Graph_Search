@@ -8,6 +8,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
+#include <QRandomGenerator>
 
 class Graph
 {
@@ -24,12 +25,15 @@ public:
 
     Graph& operator= (const Graph& graph);
 
-    void LoadFromFile(QFile* file);
+    bool LoadFromFile(QFile* file, int &error);
+    void node_swap(bool random, QPair<int, int> node_numbers = {0,1});
+    void node_inversion(int start_node);
 
     node* get_node(int index);
     int get_sum();
     int get_node_count();
-
+    int get_node_position(int node_id);
+    int get_id();
 
 private:
     int count_sum();
@@ -38,9 +42,8 @@ private:
     void edge_recalc();
     void reset();
 
-
-    int get_node_position(int node_id);
     int get_node_position(QList<node*>& nodes, int node_id);
+
 };
 
 #endif // GRAPH_H
