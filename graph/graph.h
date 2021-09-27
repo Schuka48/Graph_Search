@@ -12,6 +12,7 @@
 
 class Graph
 {
+    friend struct Comparator;
     static int count_graph;
     int id;
     int size;
@@ -20,6 +21,8 @@ class Graph
     QList<edge*> edges;
 
 public:
+
+
     Graph();
     Graph(const Graph&);
 
@@ -35,6 +38,8 @@ public:
     int get_node_position(int node_id);
     int get_id();
 
+    bool operator<(const Graph* gr);
+
 private:
     int count_sum();
     void set_sum(int sum = INT_MAX);
@@ -44,6 +49,12 @@ private:
 
     int get_node_position(QList<node*>& nodes, int node_id);
 
+};
+
+struct Comparator {
+    bool operator()(const Graph* first, const Graph* second){
+        return first->sum < second->sum;
+    }
 };
 
 #endif // GRAPH_H

@@ -23,9 +23,11 @@ Population::Population(Graph* graph, Params population_params)
         this->individs.push_back(individual);
     }
 
-    delete rg;
-
     this->best_individ = get_best_individ();
+    this->population_sorting();
+    this->tournament_selection();
+
+    delete rg;
 }
 
 void Population::start()
@@ -38,9 +40,27 @@ void Population::mutation(int individ_position)
     this->individs[individ_position]->node_swap(true);
 }
 
-void Population::idivid_inverison()
+void Population::tournament_selection()
 {
+    int population_size = this->population_params.get_population_size();
+    int count_selected_individuals = (population_size / 2) + population_size % 2;
 
+
+    QList<int> selected_individuals;
+
+    for(int i = 0; i < count_selected_individuals; i++) { // тройки турнирного отбора
+        QList<int> tournament_players = get_tournament_players((population_size / 3), population_size);
+        // отбор внутри тройки индивидов
+        selected_individuals.push_back(tournament_round(tournament_players));
+        // из списка selected_individuals сформировать новую популяцию
+    }
+
+    QString str("");
+
+//    QList<Graph*> tmp;
+//    for(int i = 0; i < count_selected_individuals; i++) {
+//        tmp.push_back(individs[i]);
+//    }
 }
 
 Graph *&Population::get_best_individ()
@@ -81,5 +101,44 @@ int Population::get_individ_position(int individ_id)
         position++;
     }
     return -1;
+}
+
+QList<int> Population::get_tournament_players(int tournament_size, int population_size)
+{
+    QRandomGenerator* rg = QRandomGenerator::global();
+
+    QList<int> individuals_position;
+    individuals_position.push_back(rg->bounded(population_size));
+
+    while(individuals_position.size() != tournament_size) {
+        int position = static_cast<int>(rg->bounded(population_size));
+        if(individuals_position.contains(position))
+            continue;
+
+        individuals_position.push_back(position);
+    }
+
+    delete rg;
+    return individuals_position;
+}
+
+int Population::tournament_round(QList<int> &tournament_players)
+{
+    int best_player = tournament_players[0];
+    int best_sum = this->individs[tournament_players[0]]->get_sum();
+    for(auto position: tournament_players)
+    {
+        if(this->individs[position]->get_sum() < best_sum)
+        {
+            best_player = position;
+            best_sum = this->individs[position]->get_sum();
+        }
+    }
+    return best_player; // возвращает индекс лучшего из турнирного раунда
+}
+
+void Population::population_sorting()
+{
+    std::sort(individs.begin(), individs.end(), Comparator());
 }
 

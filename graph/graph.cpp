@@ -287,11 +287,16 @@ int Graph::get_node_position(QList<node *> &nodes, int node_id)
             return c;
         c++;
     }
-    return -1;
 
+    return -1;
 }
 
 int Graph::get_id()
 {
     return this->id;
+}
+
+bool Graph::operator<(const Graph *gr)
+{
+    return this->sum < gr->sum;
 }

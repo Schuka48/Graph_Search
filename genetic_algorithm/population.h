@@ -3,9 +3,12 @@
 
 #include <QList>
 #include <QRandomGenerator>
+#include <memory>
 
 #include "graph/graph.h"
 #include "genetic_algorithm/params.h"
+
+
 
 class Population
 {
@@ -18,15 +21,20 @@ public:
     Population(Graph* graph, Params population_params);
 
     void start();
-    void mutation(int individ_position);
-    void idivid_inverison();
-    void round();
 
-
+private:
     Graph*& get_best_individ();
-    int get_best_individ_position();
 
+    int get_best_individ_position();
     int get_individ_position(int individ_id);
+    QList<int> get_tournament_players(int tournament_size, int population_size);
+    int tournament_round(QList<int>& tournament_players);
+
+    void population_sorting();
+    void mutation(int individ_position);
+    void tournament_selection();
+    void crossing();
+    void round();
 };
 
 #endif // POPULATION_H
