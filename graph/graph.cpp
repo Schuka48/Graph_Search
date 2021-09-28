@@ -315,3 +315,32 @@ bool Graph::operator==(Graph *&gr)
 {
     return this->id == gr->id;
 }
+
+QPair<int, int> Graph::generate_graph_slice(int graph_size)
+{
+    QRandomGenerator* rg = QRandomGenerator::global();
+    int first = rg->bounded(1, graph_size - 1);
+    int second = rg->bounded(1, graph_size - 1);
+    while(second == first)
+        second = rg->bounded(1, graph_size - 1);
+
+    QPair<int, int> graph_slice_border;
+    if(second > first) {
+        graph_slice_border.first = first;
+        graph_slice_border.second = second;
+    }
+    else {
+        graph_slice_border.first = second;
+        graph_slice_border.second = first;
+    }
+
+    delete rg;
+    return graph_slice_border;
+}
+
+void crossing(const Graph *&parent_1, const Graph *&parent_2, Graph *&child_1, Graph *&child_2)
+{
+    QPair<int, int> slice_border = Graph::generate_graph_slice(parent_1->size);
+    // выполнение алгоритма скрещивания двух особей
+
+}

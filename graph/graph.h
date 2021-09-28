@@ -42,6 +42,10 @@ public:
     bool operator<(const Graph* gr);
     bool operator==(Graph* &gr);
 
+    static QPair<int, int> generate_graph_slice(int graph_size);
+
+    friend void crossing(const Graph*& parent_1, const Graph*& parent_2, Graph*& child_1, Graph*& child_2);
+
 private:
     int count_sum();
     void set_sum(int sum = INT_MAX);
@@ -50,6 +54,7 @@ private:
     void reset();
 
     int get_node_position(QList<node*>& nodes, int node_id);
+
 
 };
 

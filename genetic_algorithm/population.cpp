@@ -82,7 +82,19 @@ void Population::tournament_selection()
     individs = tmp;
 }
 
-// Очистка особей, не прошедших отбор
+// Функция скрещивания
+void Population::crossing_individs()
+{
+       int new_population_size = individs.size();
+       int population_size = this->population_params.get_population_size();
+
+       int crossing_individs = 0; // количество особей, полученных путем скрещивания
+       while((crossing_individs + new_population_size) != population_size) {
+
+       }
+}
+
+// Освобождение памяти для особей, не прошедших отбор
 void Population::population_cleanup(const QList<Graph *>& new_population)
 {
     for(const auto & individ: this->individs) {

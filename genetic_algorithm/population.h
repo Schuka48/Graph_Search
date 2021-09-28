@@ -34,7 +34,7 @@ private:
     void population_sorting();
     void mutation(int individ_position);
     void tournament_selection();
-    void crossing();
+    void crossing_individs();
     void round();
 
     void population_cleanup(const QList<Graph*>& new_population);
