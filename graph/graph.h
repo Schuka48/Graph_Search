@@ -25,6 +25,7 @@ public:
 
     Graph();
     Graph(const Graph&);
+    ~Graph();
 
     Graph& operator= (const Graph& graph);
 
@@ -39,6 +40,7 @@ public:
     int get_id();
 
     bool operator<(const Graph* gr);
+    bool operator==(Graph* &gr);
 
 private:
     int count_sum();

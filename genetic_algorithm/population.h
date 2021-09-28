@@ -27,6 +27,7 @@ private:
 
     int get_best_individ_position();
     int get_individ_position(int individ_id);
+
     QList<int> get_tournament_players(int tournament_size, int population_size);
     int tournament_round(QList<int>& tournament_players);
 
@@ -35,6 +36,8 @@ private:
     void tournament_selection();
     void crossing();
     void round();
+
+    void population_cleanup(const QList<Graph*>& new_population);
 };
 
 #endif // POPULATION_H

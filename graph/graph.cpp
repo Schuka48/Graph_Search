@@ -48,6 +48,16 @@ Graph::Graph(const Graph & graph)
     this->sum = graph.sum;
 }
 
+Graph::~Graph()
+{
+    for(auto& node: this->nodes) {
+        delete node;
+    }
+    for(auto& edge: this->edges) {
+        delete edge;
+    }
+}
+
 Graph &Graph::operator=(const Graph &graph)
 {
     if(this == &graph)
@@ -299,4 +309,9 @@ int Graph::get_id()
 bool Graph::operator<(const Graph *gr)
 {
     return this->sum < gr->sum;
+}
+
+bool Graph::operator==(Graph *&gr)
+{
+    return this->id == gr->id;
 }
