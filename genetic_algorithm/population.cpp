@@ -16,7 +16,7 @@ Population::Population(Graph* graph, Params population_params)
         Graph* individual = new Graph(*graph);
         if(i != 0){                     // рандомно меняем структуру графа
             int try_count = 1;
-            try_count = rg->bounded(1, pop_size - 1);
+            try_count = rg->bounded(1, pop_size);
             for(int i(0); i < try_count; i++)
                 individual->node_swap(true);
         }
@@ -25,7 +25,7 @@ Population::Population(Graph* graph, Params population_params)
 
     this->best_individ = get_best_individ();
     this->population_sorting();
-//    this->tournament_selection();
+    this->tournament_selection();
 
     delete rg;
 }
@@ -89,8 +89,10 @@ void Population::crossing_individs()
        int population_size = this->population_params.get_population_size();
 
        int crossing_individs = 0; // количество особей, полученных путем скрещивания
-       while((crossing_individs + new_population_size) != population_size) {
 
+       QPair<int, int> graph_slice = Graph::generate_graph_slice(individs[0]->get_size());
+       while((crossing_individs + new_population_size) != population_size) {
+            _crossIndivids(graph_slice);
        }
 }
 
@@ -102,6 +104,11 @@ void Population::population_cleanup(const QList<Graph *>& new_population)
             delete individ;
         }
     }
+}
+
+void Population::_crossIndivids(QPair<int, int> border_slice)
+{
+
 }
 
 Graph *&Population::get_best_individ()

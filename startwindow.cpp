@@ -6,7 +6,7 @@ StartWindow::StartWindow(QWidget *parent) :
     ui(new Ui::StartWindow)
 {
     ui->setupUi(this);
-    graph = new Graph();
+    graph = nullptr;
     algorithm_params = new Params();
 }
 
@@ -20,6 +20,11 @@ StartWindow::~StartWindow()
 
 void StartWindow::on_action_triggered()
 {
+    if(graph != nullptr)
+        delete graph;
+
+    graph = new Graph();
+
     QString file_path = "data.txt";
     QFile open_file(file_path); // поменять на выбор файла
     if(!open_file.open(QIODevice::ReadOnly)) {
@@ -30,6 +35,12 @@ void StartWindow::on_action_triggered()
     graph->LoadFromFile(&open_file, error);
 
     // switch case если вернули false;
+    switch (error) {
+    case 1: QMessageBox::warning(this, "Предупреждение", "Невозможно открыть файл"); break;
+    case 2: QMessageBox::warning(this, "Предупреждение", "Размер графа меньше допустимого значения,"
+                                                         " для ознакомления с параметрами графа обратитесь к справке."); break;
+    case 3: QMessageBox::warning(this, "Предупреждение", "Неправильный формат файла, обартитесь к справке"); break;
+    }
 
     open_file.close();
 }
@@ -40,17 +51,23 @@ void StartWindow::on_pushButton_clicked()
 
     QString str("");
     qDebug() << algorithm_params << " " << algorithm_params->get_iter_count();
+    if(graph == nullptr) {
+        QMessageBox::warning(this, "Предупреждение", "Необходимо загрузить модель графа.");
+        return;
 
-    if(graph->get_node_count() == 0 || graph->get_sum() == 0)
+    }
+    else if(graph->get_node_count() == 0 || graph->get_sum() == 0)
     {
         QMessageBox::warning(this, "Предупреждение", "Необходимо загрузить модель графа.");
         return;
     }
+
     result_graph = new Graph(*graph);
 
 
     population = new Population(result_graph, *algorithm_params);
 //    population->start();
+    delete graph;
 }
 
 void StartWindow::on_action_5_triggered()

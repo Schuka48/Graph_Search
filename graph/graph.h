@@ -10,6 +10,8 @@
 #include <QDebug>
 #include <QRandomGenerator>
 
+
+
 class Graph
 {
     friend struct Comparator;
@@ -38,13 +40,12 @@ public:
     int get_node_count();
     int get_node_position(int node_id);
     int get_id();
+    int get_size();
 
     bool operator<(const Graph* gr);
     bool operator==(Graph* &gr);
 
     static QPair<int, int> generate_graph_slice(int graph_size);
-
-    friend void crossing(const Graph*& parent_1, const Graph*& parent_2, Graph*& child_1, Graph*& child_2);
 
 private:
     int count_sum();
@@ -63,5 +64,6 @@ struct Comparator {
         return first->sum < second->sum;
     }
 };
+
 
 #endif // GRAPH_H

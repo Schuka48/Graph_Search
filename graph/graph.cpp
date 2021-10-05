@@ -5,7 +5,8 @@ int Graph::count_graph = 0;
 Graph::Graph()
 {
     this->id = ++count_graph;
-    sum = 0;
+    this->sum = 0;
+    this->size = 0;
     reset();
 }
 
@@ -117,11 +118,6 @@ bool Graph::LoadFromFile(QFile* file, int &error)
     QTextStream txt(file);
     QString size = "";
     txt >> size;
-    if(size < 3)
-    {
-        error = 2;
-        return false;
-    }
 
     try {
         this->size = size.toInt();
@@ -129,6 +125,12 @@ bool Graph::LoadFromFile(QFile* file, int &error)
     } catch (...) {
         qDebug() << "Wrong!";
         error = 3;
+        return false;
+    }
+
+    if(size.toInt() < 3)
+    {
+        error = 2;
         return false;
     }
 
@@ -306,6 +308,11 @@ int Graph::get_id()
     return this->id;
 }
 
+int Graph::get_size()
+{
+    return this->size;
+}
+
 bool Graph::operator<(const Graph *gr)
 {
     return this->sum < gr->sum;
@@ -338,9 +345,4 @@ QPair<int, int> Graph::generate_graph_slice(int graph_size)
     return graph_slice_border;
 }
 
-void crossing(const Graph *&parent_1, const Graph *&parent_2, Graph *&child_1, Graph *&child_2)
-{
-    QPair<int, int> slice_border = Graph::generate_graph_slice(parent_1->size);
-    // выполнение алгоритма скрещивания двух особей
 
-}
