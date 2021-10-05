@@ -106,8 +106,10 @@ void Population::population_cleanup(const QList<Graph *>& new_population)
     }
 }
 
-void Population::_crossIndivids(QPair<int, int> border_slice)
+void Population::_crossIndivids(QPair<int, int> border_slice, int first_parent, int second_parent)
 {
+    individs[first_parent];
+    individs[second_parent];
 
 }
 

@@ -274,6 +274,12 @@ void Graph::reset() // сброс id для узлов и ребер
     edge::reset();
 }
 
+void Graph::_reset()
+{
+    node::reset();
+    edge::reset();
+}
+
 int Graph::get_node_count()
 {
     return this->nodes.size();
@@ -343,6 +349,18 @@ QPair<int, int> Graph::generate_graph_slice(int graph_size)
 
     delete rg;
     return graph_slice_border;
+}
+
+Graph *&Graph::cross(Graph *&individ)
+{
+    _reset();
+    Graph* tmp = new Graph();
+    for(int i = 0; i < individ->size; i++) {
+        node *vertex = new node();
+        tmp->nodes.push_back(vertex);
+    }
+
+//    return tmp;
 }
 
 

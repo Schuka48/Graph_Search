@@ -38,7 +38,7 @@ private:
     void round();
 
     void population_cleanup(const QList<Graph*>& new_population);
-    void _crossIndivids(QPair<int, int> border_slice);
+    void _crossIndivids(QPair<int, int> border_slice, int first_parent, int second_parent);
 };
 
 #endif // POPULATION_H
