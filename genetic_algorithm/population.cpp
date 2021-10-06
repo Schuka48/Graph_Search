@@ -92,7 +92,7 @@ void Population::crossing_individs()
 
        QPair<int, int> graph_slice = Graph::generate_graph_slice(individs[0]->get_size());
        while((crossing_individs + new_population_size) != population_size) {
-            _crossIndivids(graph_slice);
+            _crossIndivids(graph_slice, 0, 1);
        }
 }
 
@@ -108,8 +108,7 @@ void Population::population_cleanup(const QList<Graph *>& new_population)
 
 void Population::_crossIndivids(QPair<int, int> border_slice, int first_parent, int second_parent)
 {
-    individs[first_parent];
-    individs[second_parent];
+    individs[first_parent]->cross(individs[second_parent], border_slice);
 
 }
 

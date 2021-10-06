@@ -20,6 +20,8 @@ public:
     int get_id();
     int get_position(int id);
 
+    bool operator== (node *& vertex);
+
     static void reset();
 };
 

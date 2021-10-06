@@ -13,7 +13,7 @@ void node::add_edge(edge *ed)
     this->edges.push_back(ed);
 }
 
-edge*node::get_edge(int index)
+edge* node::get_edge(int index)
 {
     if(this->edges.count() > index)
     {
@@ -25,6 +25,11 @@ edge*node::get_edge(int index)
 int node::get_id()
 {
     return this->id;
+}
+
+bool node::operator==(node *&vertex)
+{
+    return this->id == vertex->id;
 }
 
 void node::reset()

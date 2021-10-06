@@ -87,7 +87,7 @@ Graph &Graph::operator=(const Graph &graph)
         int node_position = get_node_position(tmp, node_id); // позиция в tmp узла с node_id
         this->nodes.push_back(tmp[node_position]); // добавление в this->nodes узла с node_position
     }
-    for(int i = 0; i < size; i++) { // копирование ребер
+    for(int i = 0; i < graph.edges.size(); i++) { // копирование ребер
         edge* ed = new edge();
 
         int first_node_id = graph.edges[i]->get_first_node_id();
@@ -274,11 +274,6 @@ void Graph::reset() // сброс id для узлов и ребер
     edge::reset();
 }
 
-void Graph::_reset()
-{
-    node::reset();
-    edge::reset();
-}
 
 int Graph::get_node_count()
 {
@@ -332,10 +327,10 @@ bool Graph::operator==(Graph *&gr)
 QPair<int, int> Graph::generate_graph_slice(int graph_size)
 {
     QRandomGenerator* rg = QRandomGenerator::global();
-    int first = rg->bounded(1, graph_size - 1);
-    int second = rg->bounded(1, graph_size - 1);
+    int first = rg->bounded(1, graph_size);
+    int second = rg->bounded(1, graph_size);
     while(second == first)
-        second = rg->bounded(1, graph_size - 1);
+        second = rg->bounded(1, graph_size);
 
     QPair<int, int> graph_slice_border;
     if(second > first) {
@@ -351,16 +346,91 @@ QPair<int, int> Graph::generate_graph_slice(int graph_size)
     return graph_slice_border;
 }
 
-Graph *&Graph::cross(Graph *&individ)
+// Функция, выполняющая скрещивание двух родителей
+Graph *Graph::cross(Graph *&individ, QPair<int, int> border)
 {
-    _reset();
-    Graph* tmp = new Graph();
+    reset();
+
+    Graph* child = new Graph();
+    QList<node*> tmp;
+
     for(int i = 0; i < individ->size; i++) {
         node *vertex = new node();
-        tmp->nodes.push_back(vertex);
+        tmp.push_back(vertex);
     }
 
-//    return tmp;
+    for(int i = border.first; i < border.second; i++) {
+        int node_id = individ->nodes[i]->get_id();
+        int node_position = individ->get_node_position(tmp, node_id);
+        child->nodes.push_back(tmp[node_position]);
+    }
+
+    // восстановление порядка вершин родителя у ребенка
+    int i = 0;
+    for(auto& node: this->nodes) {
+        if(child->nodes.indexOf(node) < 0)
+        {
+            // тут нужно определить в какую сторону добавлять вершину
+            int parent_node_position = this->get_node_position(node->get_id());
+            if(parent_node_position < border.first) {
+                int child_node_position = get_node_position(tmp, node->get_id()); // позиция node в tmp
+                child->nodes.insert(i, tmp[child_node_position]);
+                i++;
+            }
+            else {
+                int child_node_position = get_node_position(tmp, node->get_id());
+                child->nodes.push_back(tmp[child_node_position]);
+            }
+        }
+    }
+
+    for(int i = 0; i < this->edges.size(); i++) {
+        edge* ed = new edge();
+
+        int first_node_id = this->edges[i]->get_first_node_id();
+        int second_node_id = this->edges[i]->get_second_node_id();
+
+        int first_node_position = child->get_node_position(first_node_id);
+        int second_node_position = child->get_node_position(second_node_id);
+
+        ed->set_first(child->nodes[first_node_position]);
+        ed->set_second(child->nodes[second_node_position]);
+        ed->set_weight(abs(first_node_position - second_node_position));
+
+        child->edges.push_back(ed);
+        child->nodes[first_node_position]->add_edge(ed);
+        child->nodes[second_node_position]->add_edge(ed);
+    }
+//    child->sum
+
+
+
+//    for(int i = 0; i < graph.edges.size(); i++) { // копирование ребер
+//        edge* ed = new edge();
+
+//        int first_node_id = graph.edges[i]->get_first_node_id();
+//        int second_node_id = graph.edges[i]->get_second_node_id();
+
+//        int first_node_position = this->get_node_position(first_node_id);
+//        int second_node_position = this->get_node_position(second_node_id);
+
+//        ed->set_first(this->nodes[first_node_position]);
+//        ed->set_second(this->nodes[second_node_position]);
+//        ed->set_weight(graph.edges[i]->get_weight());
+
+//        this->edges.push_back(ed);
+//        this->nodes[first_node_position]->add_edge(ed);
+//        this->nodes[second_node_position]->add_edge(ed);
+//    }
+//    this->sum = graph.sum;
+
+
+
+    return child;
 }
+
+
+
+
 
 
