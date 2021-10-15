@@ -17,15 +17,17 @@ class Population
     Graph* best_individ;
     int number_of_rounds_without_improvement;
     bool fixation = false;
+    Graph* selected_individual;
 
 public:
     Population();
     Population(Graph* graph, Params population_params);
 
+    Graph*& get_best_individ();
+
     void start();
 
 private:
-    Graph*& get_best_individ();
 
     int get_best_individ_position();
     int get_individ_position(int individ_id);

@@ -1,5 +1,6 @@
 #include "population.h"
 
+// Конструктор - генерация нулевого поколения
 Population::Population()
 {
    qDebug() << "Created population with address: " << this;
@@ -8,6 +9,7 @@ Population::Population()
 
 Population::Population(Graph* graph, Params population_params)
 {   
+
     this->number_of_rounds_without_improvement = 0;
     this->population_params = population_params;
     int pop_size = this->population_params.get_population_size();
@@ -15,7 +17,7 @@ Population::Population(Graph* graph, Params population_params)
     QRandomGenerator* rg = QRandomGenerator::global();
     for(int i = 0; i < pop_size; i++) {
         Graph* individual = new Graph(*graph);
-        if(i != 0){                     // рандомно меняем структуру графа
+        if(i != 0){                     // рандомно меняем структуру индивида
             int try_count = 1;
             try_count = rg->bounded(1, pop_size);
             for(int i(0); i < try_count; i++)
@@ -33,16 +35,17 @@ Population::Population(Graph* graph, Params population_params)
 // Запуск Генетического алгоритма
 void Population::start()
 {
-    // функция работы генетического алгоритма расположения графа на линейке
+    // функция отрабатывания генетического алгоритма расположения графа на линейке
     algorithm();
 }
 
-// Мутация особи
+// Мутация отдельной особи
 void Population::mutation(int individ_position)
 {
     this->individs[individ_position]->node_swap(true);
 }
 
+// турнирный способ отбора особей в популяции для дальнейшего сккрещивания
 void Population::tournament_selection()
 {
     int population_size = this->population_params.get_population_size();
@@ -100,12 +103,13 @@ void Population::crossing_individs()
        }
 }
 
+// процесс мутации поколения
 void Population::population_mutation()
 {
-    int size = this->best_individ->get_size();
+    int size = this->population_params.get_population_size();
+    int probability = static_cast<int>(this->population_params.get_mutation_potention() * 100);
 
-    for(int i = 0; i < size; i++) {
-        double probability = this->population_params.get_mutation_potention() * 100;
+    for(int i = 0; i < size; i++) {   
         int potention = QRandomGenerator::global()->bounded(0,100);
 
         if(potention < probability) {
@@ -120,6 +124,7 @@ void Population::round()
     this->tournament_selection();
     this->crossing_individs();
     this->population_mutation();
+    this->population_sorting();
 
     bool new_individ_is_better = freeze_check(this->get_best_individ()); // проверка отсутствия улучшения в алгоритме
 
@@ -132,12 +137,14 @@ void Population::round()
 void Population::algorithm()
 {
     int count_of_round = 0;
-    while(count_of_round != population_params.get_iter_count() || fixation != true) {
+    while(count_of_round != population_params.get_iter_count() && fixation != true) {
         round();
         count_of_round++;
     }
+
 }
 
+// проверка на отсутствие улучшения особей популяции
 bool Population::freeze_check(Graph* new_best_individ)
 {
     int new_best_sum = new_best_individ->get_sum();
@@ -172,6 +179,7 @@ void Population::population_cleanup(const QList<Graph *>& new_population)
     }
 }
 
+// функция получения новых особей, посредством скрещивания отобранных
 void Population::_crossIndivids(QPair<int, int> border_slice, int first_parent, int second_parent)
 {
     Graph* first_child = individs[first_parent]->cross(individs[second_parent], border_slice);
@@ -181,6 +189,7 @@ void Population::_crossIndivids(QPair<int, int> border_slice, int first_parent, 
     this->individs.push_back(second_child);
 }
 
+// возвращает особь с лучшей характеристикой
 Graph *&Population::get_best_individ()
 {
     int best_sum = this->individs[0]->get_sum();
@@ -195,6 +204,7 @@ Graph *&Population::get_best_individ()
     return this->individs[best_index];
 }
 
+// позиция в популяции лучшей особи
 int Population::get_best_individ_position()
 {
     int best_sum = this->individs[0]->get_sum();
@@ -209,6 +219,7 @@ int Population::get_best_individ_position()
     return best_index;
 }
 
+// позиция определенной особи в популяции
 int Population::get_individ_position(int individ_id)
 {
     int position = 0;
@@ -257,6 +268,7 @@ int Population::tournament_round(QList<int> &tournament_players)
     return best_player; // возвращает индекс лучшего из турнирного раунда
 }
 
+// сортировка популяции с использованием специализированного компаратора
 void Population::population_sorting()
 {
     std::sort(individs.begin(), individs.end(), Comparator());

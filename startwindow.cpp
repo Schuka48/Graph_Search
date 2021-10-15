@@ -7,6 +7,7 @@ StartWindow::StartWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     graph = nullptr;
+    result_graph = nullptr;
     algorithm_params = new Params();
 }
 
@@ -25,7 +26,7 @@ void StartWindow::on_action_triggered()
 
     graph = new Graph();
 
-    QString file_path = "data.txt";
+    QString file_path = "adjacency_matrix.txt";
     QFile open_file(file_path); // поменять на выбор файла
     if(!open_file.open(QIODevice::ReadOnly)) {
         QMessageBox::warning(this, "Warning!", "Файл не открылся!");
@@ -49,7 +50,6 @@ void StartWindow::on_pushButton_clicked()
 {
     // запуск Генетического алгоритма
 
-    QString str("");
     qDebug() << algorithm_params << " " << algorithm_params->get_iter_count();
     if(graph == nullptr) {
         QMessageBox::warning(this, "Предупреждение", "Необходимо загрузить модель графа.");
@@ -61,12 +61,10 @@ void StartWindow::on_pushButton_clicked()
         QMessageBox::warning(this, "Предупреждение", "Необходимо загрузить модель графа.");
         return;
     }
+    population = new Population(graph, *algorithm_params);
+    population->start();
 
-    result_graph = new Graph(*graph);
-
-
-    population = new Population(result_graph, *algorithm_params);
-//    population->start();
+    result_graph = this->population->get_best_individ();
     delete graph;
 }
 

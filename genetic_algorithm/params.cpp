@@ -5,6 +5,7 @@ Params::Params()
     this->population_size = 10;
     this->iter_count = 10;
     this->mutation_potention = 0.05;
+    this->num_steps_without_improvment = 10;
 }
 
 void Params::set_population_size(int population_size)
