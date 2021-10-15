@@ -15,6 +15,8 @@ class Population
     QList<Graph*> individs;
     Params population_params;
     Graph* best_individ;
+    int number_of_rounds_without_improvement;
+    bool fixation = false;
 
 public:
     Population();
@@ -35,10 +37,14 @@ private:
     void mutation(int individ_position);
     void tournament_selection();
     void crossing_individs();
+    void population_mutation();
     void round();
+    void algorithm();
+
+    bool freeze_check(Graph* new_best_individ);
 
     void population_cleanup(const QList<Graph*>& new_population);
-    void _crossIndivids(QPair<int, int> border_slice, int first_parent, int second_parent);
+    void _crossIndivids(QPair<int, int> border_slice, int first_parent, int second_parent); 
 };
 
 #endif // POPULATION_H

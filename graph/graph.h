@@ -47,6 +47,7 @@ public:
 
     static QPair<int, int> generate_graph_slice(int graph_size);
     Graph *cross(Graph *&individ, QPair<int, int> border);
+    int indexOf(node*& node);
 
 private:
     int count_sum();

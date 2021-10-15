@@ -3,11 +3,12 @@
 Population::Population()
 {
    qDebug() << "Created population with address: " << this;
+   this->number_of_rounds_without_improvement = 0;
 }
 
 Population::Population(Graph* graph, Params population_params)
-{
-
+{   
+    this->number_of_rounds_without_improvement = 0;
     this->population_params = population_params;
     int pop_size = this->population_params.get_population_size();
 
@@ -25,7 +26,6 @@ Population::Population(Graph* graph, Params population_params)
 
     this->best_individ = get_best_individ();
     this->population_sorting();
-    this->tournament_selection();
 
     delete rg;
 }
@@ -33,7 +33,8 @@ Population::Population(Graph* graph, Params population_params)
 // Запуск Генетического алгоритма
 void Population::start()
 {
-
+    // функция работы генетического алгоритма расположения графа на линейке
+    algorithm();
 }
 
 // Мутация особи
@@ -90,10 +91,75 @@ void Population::crossing_individs()
 
        int crossing_individs = 0; // количество особей, полученных путем скрещивания
 
-       QPair<int, int> graph_slice = Graph::generate_graph_slice(individs[0]->get_size());
+       int i = 0;
        while((crossing_individs + new_population_size) != population_size) {
-            _crossIndivids(graph_slice, 0, 1);
+           QPair<int, int> graph_slice = Graph::generate_graph_slice(individs[0]->get_size());
+           _crossIndivids(graph_slice, i, i + 1);
+           i += 2;
+           crossing_individs += 2;
        }
+}
+
+void Population::population_mutation()
+{
+    int size = this->best_individ->get_size();
+
+    for(int i = 0; i < size; i++) {
+        double probability = this->population_params.get_mutation_potention() * 100;
+        int potention = QRandomGenerator::global()->bounded(0,100);
+
+        if(potention < probability) {
+            this->mutation(i);
+        }
+    }
+}
+
+// раунд генетического алгоритма
+void Population::round()
+{
+    this->tournament_selection();
+    this->crossing_individs();
+    this->population_mutation();
+
+    bool new_individ_is_better = freeze_check(this->get_best_individ()); // проверка отсутствия улучшения в алгоритме
+
+    if(new_individ_is_better) {
+        this->best_individ = this->get_best_individ();
+    }
+}
+
+// выполнение основного алгоритма программы
+void Population::algorithm()
+{
+    int count_of_round = 0;
+    while(count_of_round != population_params.get_iter_count() || fixation != true) {
+        round();
+        count_of_round++;
+    }
+}
+
+bool Population::freeze_check(Graph* new_best_individ)
+{
+    int new_best_sum = new_best_individ->get_sum();
+    int best_sum = best_individ->get_sum();
+    if(new_best_sum == best_sum) {
+        this->number_of_rounds_without_improvement++;
+
+        if(this->number_of_rounds_without_improvement > this->population_params.get_num_steps_without_improvment())
+        {
+            this->fixation = true;
+            return false;
+        }
+    }
+    else if(new_best_sum > best_sum){
+        this->number_of_rounds_without_improvement++;
+        return false;
+    }
+    else {
+        this->number_of_rounds_without_improvement = 0;
+        return true;
+    }
+    return false;
 }
 
 // Освобождение памяти для особей, не прошедших отбор
@@ -108,8 +174,11 @@ void Population::population_cleanup(const QList<Graph *>& new_population)
 
 void Population::_crossIndivids(QPair<int, int> border_slice, int first_parent, int second_parent)
 {
-    individs[first_parent]->cross(individs[second_parent], border_slice);
+    Graph* first_child = individs[first_parent]->cross(individs[second_parent], border_slice);
+    Graph* second_child = individs[second_parent]->cross(individs[first_parent], border_slice);
 
+    this->individs.push_back(first_child);
+    this->individs.push_back(second_child);
 }
 
 Graph *&Population::get_best_individ()

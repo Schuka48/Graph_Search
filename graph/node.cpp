@@ -27,9 +27,14 @@ int node::get_id()
     return this->id;
 }
 
-bool node::operator==(node *&vertex)
+bool node::operator ==(node *vertex)
 {
     return this->id == vertex->id;
+}
+
+bool node::operator <(node *vertex)
+{
+    return this->id < vertex->id;
 }
 
 void node::reset()
