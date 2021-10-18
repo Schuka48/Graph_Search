@@ -17,6 +17,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     forms/settings/settings.cpp \
+    genetic_algorithm/manager.cpp \
     genetic_algorithm/params.cpp \
     genetic_algorithm/population.cpp \
     graph/edge.cpp \
@@ -27,6 +28,7 @@ SOURCES += \
 
 HEADERS += \
     forms/settings/settings.h \
+    genetic_algorithm/manager.h \
     genetic_algorithm/params.h \
     genetic_algorithm/population.h \
     graph/edge.h \

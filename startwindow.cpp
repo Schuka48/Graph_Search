@@ -14,9 +14,7 @@ StartWindow::StartWindow(QWidget *parent) :
 StartWindow::~StartWindow()
 {
     delete ui;
-    delete graph;
     delete algorithm_params;
-    delete population;
 }
 
 void StartWindow::on_action_triggered()
@@ -30,6 +28,8 @@ void StartWindow::on_action_triggered()
     QFile open_file(file_path); // поменять на выбор файла
     if(!open_file.open(QIODevice::ReadOnly)) {
         QMessageBox::warning(this, "Warning!", "Файл не открылся!");
+        delete graph;
+        graph = nullptr;
         return;
     }
     int error = 0;
@@ -37,10 +37,15 @@ void StartWindow::on_action_triggered()
 
     // switch case если вернули false;
     switch (error) {
-    case 1: QMessageBox::warning(this, "Предупреждение", "Невозможно открыть файл"); break;
-    case 2: QMessageBox::warning(this, "Предупреждение", "Размер графа меньше допустимого значения,"
+    case openFile_Error: {
+        QMessageBox::warning(this, "Предупреждение", "Невозможно открыть файл");
+        delete graph;
+        graph = nullptr;
+        break;
+        }
+    case graphSize_Error: QMessageBox::warning(this, "Предупреждение", "Размер графа меньше допустимого значения,"
                                                          " для ознакомления с параметрами графа обратитесь к справке."); break;
-    case 3: QMessageBox::warning(this, "Предупреждение", "Неправильный формат файла, обартитесь к справке"); break;
+    case fileFormat_Error: QMessageBox::warning(this, "Предупреждение", "Неправильный формат файла, обартитесь к справке"); break;
     }
 
     open_file.close();
@@ -62,10 +67,14 @@ void StartWindow::on_pushButton_clicked()
         return;
     }
     population = new Population(graph, *algorithm_params);
-    population->start();
+//    population->start();
+    Manager* algorithm_manager = new Manager(algorithm_params->get_thread_count());
+    algorithm_manager->start();
 
     result_graph = this->population->get_best_individ();
+
     delete graph;
+    delete population;
 }
 
 void StartWindow::on_action_5_triggered()

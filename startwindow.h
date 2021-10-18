@@ -5,12 +5,19 @@
 #include "genetic_algorithm/population.h"
 #include "forms/settings/settings.h"
 #include "genetic_algorithm/params.h"
+#include "genetic_algorithm/manager.h"
 
 #include <QMainWindow>
 #include <QMainWindow>
 #include <QFile>
 #include <QMessageBox>
 #include <QFileDialog>
+
+enum  Errors {
+    openFile_Error = 1,
+    graphSize_Error = 2,
+    fileFormat_Error = 3
+};
 
 namespace Ui {
 class StartWindow;
@@ -24,6 +31,9 @@ public:
     explicit StartWindow(QWidget *parent = nullptr);
     ~StartWindow();
 
+    void show_result();
+    void print_result();
+
 private slots:
     void on_action_triggered();
 
@@ -35,6 +45,7 @@ private:
     Ui::StartWindow *ui;
 
     Graph* graph;
+
     Graph* result_graph;
 
     Params* algorithm_params;

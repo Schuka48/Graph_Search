@@ -55,7 +55,7 @@ void Population::tournament_selection()
     QList<Graph*> tmp;
 
     for(int i = 0; i < count_selected_individuals; i++) {
-        QList<int> tournament_players = get_tournament_players((population_size / 3), population_size); // тройки турнирного отбора
+        QList<int> tournament_players = get_tournament_players(population_params.get_tournament_size(), population_size); // тройки турнирного отбора
         // отбор внутри тройки индивидов
         selected_individuals.push_back(tournament_round(tournament_players));   
     }
@@ -155,7 +155,7 @@ bool Population::freeze_check(Graph* new_best_individ)
         if(this->number_of_rounds_without_improvement > this->population_params.get_num_steps_without_improvment())
         {
             this->fixation = true;
-            return false;
+            return true;
         }
     }
     else if(new_best_sum > best_sum){
