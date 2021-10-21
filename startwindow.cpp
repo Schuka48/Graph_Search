@@ -9,12 +9,20 @@ StartWindow::StartWindow(QWidget *parent) :
     graph = nullptr;
     result_graph = nullptr;
     algorithm_params = new Params();
+    this->setWindowIcon(QPixmap(":/algorithm.png"));
 }
 
 StartWindow::~StartWindow()
 {
     delete ui;
     delete algorithm_params;
+}
+
+void StartWindow::on_algorithm_finished()
+{
+    this->result = algorithm_manager->get_result();
+    ui->label_3->setText("Алгоритм завершился. Сохраните результат!");
+    ui->label_4->setText(ui->label_4->text() + " " + QString::number(result[0]->get_best_individ()->get_sum()));
 }
 
 void StartWindow::on_action_triggered()
@@ -24,7 +32,12 @@ void StartWindow::on_action_triggered()
 
     graph = new Graph();
 
-    QString file_path = "adjacency_matrix.txt";
+    QFileDialog* fd = new QFileDialog(this);
+
+    QString file_path = fd->getOpenFileName(this);
+
+    if(file_path.isEmpty()) return;
+
     QFile open_file(file_path); // поменять на выбор файла
     if(!open_file.open(QIODevice::ReadOnly)) {
         QMessageBox::warning(this, "Warning!", "Файл не открылся!");
@@ -55,6 +68,8 @@ void StartWindow::on_pushButton_clicked()
 {
     // запуск Генетического алгоритма
 
+    ui->label_3->setText("Запущен. Ожидайте завершения!");
+
     qDebug() << algorithm_params << " " << algorithm_params->get_iter_count();
     if(graph == nullptr) {
         QMessageBox::warning(this, "Предупреждение", "Необходимо загрузить модель графа.");
@@ -66,19 +81,43 @@ void StartWindow::on_pushButton_clicked()
         QMessageBox::warning(this, "Предупреждение", "Необходимо загрузить модель графа.");
         return;
     }
-    population = new Population(graph, *algorithm_params);
-//    population->start();
-    Manager* algorithm_manager = new Manager(algorithm_params->get_thread_count());
+
+    this->algorithm_manager = new Manager(graph, *algorithm_params, algorithm_params->get_thread_count());
+
+    connect(algorithm_manager, &Manager::finish, this, &StartWindow::on_algorithm_finished);
+
     algorithm_manager->start();
 
-    result_graph = this->population->get_best_individ();
+//    result_graph = this->population->get_best_individ();
 
     delete graph;
-    delete population;
+//    delete population;
 }
 
 void StartWindow::on_action_5_triggered()
 {
     Settings* settings = new Settings(algorithm_params);
     settings->show();
+}
+
+void StartWindow::on_action_2_triggered()
+{
+    QFileDialog* fd = new QFileDialog(this);
+    QString save_file_name = fd->getSaveFileName(this);
+    if(save_file_name.isEmpty()) return;
+    QFile save_file(save_file_name);
+    if(save_file.open(QIODevice::WriteOnly)) {
+        QTextStream out(&save_file);
+        QString str = "";
+        for(auto vertexs: this->result[0]->get_best_individ()->get_nodes())
+        {
+            str = str + QString::number(vertexs->get_id()) + " - ";
+        }
+        int pos = str.lastIndexOf("-");
+        str = str.remove(pos, 2);
+        out << str << endl;
+        out << "Summ is: " << QString::number(result[0]->get_best_individ()->get_sum());
+    }
+    save_file.close();
+    fd->deleteLater();
 }

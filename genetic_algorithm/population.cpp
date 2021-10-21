@@ -1,13 +1,13 @@
 #include "population.h"
 
 // Конструктор - генерация нулевого поколения
-Population::Population()
+Population::Population(QObject *parent): QObject(parent)
 {
    qDebug() << "Created population with address: " << this;
    this->number_of_rounds_without_improvement = 0;
 }
 
-Population::Population(Graph* graph, Params population_params)
+Population::Population(Graph* graph, Params population_params, QObject *parent): QObject(parent)
 {   
 
     this->number_of_rounds_without_improvement = 0;
@@ -141,7 +141,7 @@ void Population::algorithm()
         round();
         count_of_round++;
     }
-
+    emit finished();
 }
 
 // проверка на отсутствие улучшения особей популяции
@@ -202,6 +202,11 @@ Graph *&Population::get_best_individ()
         }
     }
     return this->individs[best_index];
+}
+
+QList<Graph *> &Population::get_population()
+{
+    return this->individs;
 }
 
 // позиция в популяции лучшей особи

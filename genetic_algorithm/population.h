@@ -4,14 +4,17 @@
 #include <QList>
 #include <QRandomGenerator>
 #include <memory>
+#include <QObject>
 
 #include "graph/graph.h"
 #include "genetic_algorithm/params.h"
 
 
 
-class Population
+class Population: public QObject
 {
+    Q_OBJECT
+
     QList<Graph*> individs;
     Params population_params;
     Graph* best_individ;
@@ -20,10 +23,11 @@ class Population
     Graph* selected_individual;
 
 public:
-    Population();
-    Population(Graph* graph, Params population_params);
+    explicit Population(QObject *parent = nullptr);
+    explicit Population(Graph* graph, Params population_params, QObject *parent = nullptr);
 
     Graph*& get_best_individ();
+    QList<Graph*>& get_population();
 
     void start();
 
@@ -47,6 +51,9 @@ private:
 
     void population_cleanup(const QList<Graph*>& new_population);
     void _crossIndivids(QPair<int, int> border_slice, int first_parent, int second_parent); 
+
+signals:
+    void finished();
 };
 
 #endif // POPULATION_H

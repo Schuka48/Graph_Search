@@ -34,12 +34,17 @@ public:
     void show_result();
     void print_result();
 
+public slots:
+    void on_algorithm_finished();
+
 private slots:
     void on_action_triggered();
 
     void on_pushButton_clicked();
 
     void on_action_5_triggered();
+
+    void on_action_2_triggered();
 
 private:
     Ui::StartWindow *ui;
@@ -50,7 +55,9 @@ private:
 
     Params* algorithm_params;
 
-    Population* population;
+    Manager* algorithm_manager;
+
+    QList<Population*> result;
 };
 
 #endif // STARTWINDOW_H

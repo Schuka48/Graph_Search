@@ -2,6 +2,11 @@
 
 int Graph::count_graph = 0;
 
+QList<node *> &Graph::get_nodes()
+{
+    return this->nodes;
+}
+
 Graph::Graph()
 {
     this->id = ++count_graph;

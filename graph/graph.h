@@ -24,6 +24,7 @@ class Graph
 
 public:
 
+    QList<node*>& get_nodes();
 
     Graph();
     Graph(const Graph&);
