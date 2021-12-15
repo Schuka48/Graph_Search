@@ -6,6 +6,9 @@
 #include "forms/settings/settings.h"
 #include "genetic_algorithm/params.h"
 #include "genetic_algorithm/manager.h"
+#include "forms/schedule/schedule.h"
+#include "forms/authors/authors.h"
+#include "forms/help/help.h"
 
 #include <QMainWindow>
 #include <QMainWindow>
@@ -31,8 +34,7 @@ public:
     explicit StartWindow(QWidget *parent = nullptr);
     ~StartWindow();
 
-    void show_result();
-    void print_result();
+    int printResult();
 
 public slots:
     void on_algorithm_finished();
@@ -46,6 +48,12 @@ private slots:
 
     void on_action_2_triggered();
 
+    void on_pushButton_2_clicked();
+
+    void on_action_6_triggered();
+
+    void on_action_7_triggered();
+
 private:
     Ui::StartWindow *ui;
 
@@ -58,6 +66,17 @@ private:
     Manager* algorithm_manager;
 
     QList<Population*> result;
+
+    QVector<int> IntermediateResults;
+    QVector<int> BestIntermediateResults;
+
+    Settings* settings;
+
+    Authors* author;
+
+    Schedule* schedule;
+
+    Help* help;
 };
 
 #endif // STARTWINDOW_H

@@ -2,5 +2,12 @@
     <qresource prefix="/">
         <file>algorithm.png</file>
         <file>icon.ico</file>
+        <file>openFolder.ico</file>
+        <file>saveFolder.ico</file>
+        <file>settings.ico</file>
+        <file>help.ico</file>
+        <file>autors.ico</file>
+        <file>exit.ico</file>
+        <file>alg.png</file>
     </qresource>
 </RCC>

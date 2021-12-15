@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui printsupport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -16,6 +16,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    forms/authors/authors.cpp \
+    forms/help/help.cpp \
+    forms/schedule/schedule.cpp \
     forms/settings/settings.cpp \
     genetic_algorithm/manager.cpp \
     genetic_algorithm/params.cpp \
@@ -23,10 +26,14 @@ SOURCES += \
     graph/edge.cpp \
     graph/graph.cpp \
     graph/node.cpp \
+    graphic/qcustomplot.cpp \
     main.cpp \
     startwindow.cpp
 
 HEADERS += \
+    forms/authors/authors.h \
+    forms/help/help.h \
+    forms/schedule/schedule.h \
     forms/settings/settings.h \
     genetic_algorithm/manager.h \
     genetic_algorithm/params.h \
@@ -34,9 +41,13 @@ HEADERS += \
     graph/edge.h \
     graph/graph.h \
     graph/node.h \
+    graphic/qcustomplot.h \
     startwindow.h
 
 FORMS += \
+    forms/authors/authors.ui \
+    forms/help/help.ui \
+    forms/schedule/schedule.ui \
     forms/settings/settings.ui \
     startwindow.ui
 

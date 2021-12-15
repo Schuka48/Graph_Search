@@ -21,6 +21,7 @@ class Population: public QObject
     int number_of_rounds_without_improvement;
     bool fixation = false;
     Graph* selected_individual;
+    QVector<int> IntermediateResults;
 
 public:
     explicit Population(QObject *parent = nullptr);
@@ -28,6 +29,7 @@ public:
 
     Graph*& get_best_individ();
     QList<Graph*>& get_population();
+    QVector<int> GetIntermediateResults();
 
     void start();
 
@@ -35,6 +37,7 @@ private:
 
     int get_best_individ_position();
     int get_individ_position(int individ_id);
+
 
     QList<int> get_tournament_players(int tournament_size, int population_size);
     int tournament_round(QList<int>& tournament_players);

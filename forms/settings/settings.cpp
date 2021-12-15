@@ -6,6 +6,8 @@ Settings::Settings(Params *&parametrs, QWidget *parent) :
     ui(new Ui::Settings)
 {
     ui->setupUi(this);
+    this->setWindowTitle("Генетический алгоритм размещения графа на линейке");
+
     this->setWindowFlag(Qt::WindowMinMaxButtonsHint, false);
     this->params = parametrs;
 

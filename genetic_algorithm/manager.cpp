@@ -40,7 +40,8 @@ void Manager::started()
 
 void Manager::finished()
 {
-
+    QThread* thread = qobject_cast<QThread*>(sender());
+    thread->deleteLater();
 }
 
 void Manager::algorithm_finished()

@@ -126,11 +126,13 @@ void Population::round()
     this->population_mutation();
     this->population_sorting();
 
+
     bool new_individ_is_better = freeze_check(this->get_best_individ()); // проверка отсутствия улучшения в алгоритме
 
     if(new_individ_is_better) {
         this->best_individ = this->get_best_individ();
     }
+    this->IntermediateResults.push_back(this->best_individ->get_sum());
 }
 
 // выполнение основного алгоритма программы
@@ -235,6 +237,11 @@ int Population::get_individ_position(int individ_id)
         position++;
     }
     return -1;
+}
+
+QVector<int> Population::GetIntermediateResults()
+{
+    return this->IntermediateResults;
 }
 
 // возвращает список участников раунда турнирного отбора
