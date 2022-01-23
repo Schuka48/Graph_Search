@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>602</width>
-    <height>526</height>
+    <width>840</width>
+    <height>542</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -246,7 +246,7 @@ QStatusBar {
            </font>
           </property>
           <property name="text">
-           <string>Размер популяции:</string>
+           <string>Количество особей в одной популяции:</string>
           </property>
          </widget>
         </item>
@@ -306,7 +306,7 @@ QStatusBar {
            </font>
           </property>
           <property name="text">
-           <string>Количество итераций:</string>
+           <string>Количество итераций Генетического алгоритма:</string>
           </property>
          </widget>
         </item>
@@ -366,7 +366,7 @@ QStatusBar {
            </font>
           </property>
           <property name="text">
-           <string>Вероятность мутации:</string>
+           <string>Вероятность мутации особи:</string>
           </property>
          </widget>
         </item>
@@ -423,7 +423,7 @@ QStatusBar {
            </font>
           </property>
           <property name="text">
-           <string>Длительность алгоритма без улушения:</string>
+           <string>Количество итераций алгоритма, после которых он завершиться при отсутствии улучшений:</string>
           </property>
          </widget>
         </item>
@@ -483,7 +483,7 @@ QStatusBar {
            </font>
           </property>
           <property name="text">
-           <string>Размер раунда турнирного отбора:</string>
+           <string>Количество особей, принимающих участие в турнирном отборе:</string>
           </property>
          </widget>
         </item>
@@ -633,7 +633,7 @@ QStatusBar {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>602</width>
+     <width>840</width>
      <height>18</height>
     </rect>
    </property>
